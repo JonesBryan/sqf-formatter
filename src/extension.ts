@@ -10,10 +10,7 @@ function makePrefix(level: number): string {
 }
 
 function normalizeBrackets(text: string): string {
-  return text
-    .replace(/{\s*/g, '{\n')
-    .replace(/\s*}/g, '\n}')
-    .replace(/{\s*}/g, '{}');
+  return text.replace(/{\s*/g, '{\n').replace(/\s*}/g, '\n}').replace(/{\s*}/g, '{}');
 }
 
 function normalizeCommandStructure(text: string): string {
@@ -34,7 +31,7 @@ function setIndents(text: string): string {
   var deleteNextEmptyLine = false;
   return text
     .split('\n')
-    .map((line) => {
+    .map(line => {
       // Limit empty lines
       if (line === '') {
         if (deleteNextEmptyLine) return undefined;
@@ -51,19 +48,11 @@ function setIndents(text: string): string {
       const closeBracketCount = closeBrackets.length;
       const openBraceCount = openBraces.length;
       const closeBraceCount = closeBraces.length;
-      const isOpenBlock =
-        openBrackets[0].split(']').length > 1 ||
-        openBraces[0].split('}').length > 1;
-      if (
-        openBracketCount > closeBracketCount ||
-        openBraceCount > closeBraceCount
-      ) {
+      const isOpenBlock = openBrackets[0].split(']').length > 1 || openBraces[0].split('}').length > 1;
+      if (openBracketCount > closeBracketCount || openBraceCount > closeBraceCount) {
         level++;
         deleteNextEmptyLine = true;
-      } else if (
-        openBracketCount < closeBracketCount ||
-        openBraceCount < closeBraceCount
-      ) {
+      } else if (openBracketCount < closeBracketCount || openBraceCount < closeBraceCount) {
         level = Math.max(0, level - 1);
         prefix = makePrefix(level);
       } else if (isOpenBlock) {
@@ -71,15 +60,12 @@ function setIndents(text: string): string {
       }
       return prefix + line;
     })
-    .filter((line) => line !== undefined)
+    .filter(line => line !== undefined)
     .join('\n')
     .trim();
 }
 
-function pretty(
-  document: vscode.TextDocument,
-  range: vscode.Range
-): vscode.TextEdit[] {
+function pretty(document: vscode.TextDocument, range: vscode.Range): vscode.TextEdit[] {
   // vscode.commands.executeCommand('editor.action.trimTrailingWhitespace');
   // vscode.commands.executeCommand('editor.action.indentationToSpaces');
   const result: vscode.TextEdit[] = [];
@@ -87,14 +73,14 @@ function pretty(
   // Remove leading and tailing whitespaces
   output = output
     .split('\n')
-    .map((line) => line.trim())
+    .map(line => line.trim())
     .join('\n');
   // Normalize brackets
   output = normalizeBrackets(output);
   // Normalize comments
   output = output.replace(/\/\/[\s\/]*(.*)$/gm, '// $1');
   // Normalize commands
-  commands.forEach((command) => {
+  commands.forEach(command => {
     output = output.replace(new RegExp(command, 'gi'), command);
   });
   // Normalize spaces before and after comma
@@ -123,10 +109,7 @@ export function activate(context: vscode.ExtensionContext) {
       language: 'sqf',
     },
     {
-      provideDocumentRangeFormattingEdits: function (
-        document: vscode.TextDocument,
-        range: vscode.Range
-      ) {
+      provideDocumentRangeFormattingEdits: function (document: vscode.TextDocument, range: vscode.Range) {
         let end = range.end;
 
         if (end.character === 0) {
@@ -135,10 +118,7 @@ export function activate(context: vscode.ExtensionContext) {
           end = end.translate(0, Number.MAX_VALUE);
         }
 
-        const selectionRange = new vscode.Range(
-          new vscode.Position(range.start.line, 0),
-          end
-        );
+        const selectionRange = new vscode.Range(new vscode.Position(range.start.line, 0), end);
         return pretty(document, selectionRange);
       },
     }
@@ -150,14 +130,9 @@ export function activate(context: vscode.ExtensionContext) {
       language: 'sqf',
     },
     {
-      provideDocumentFormattingEdits(
-        document: vscode.TextDocument
-      ): vscode.TextEdit[] {
+      provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
         const start = new vscode.Position(0, 0);
-        const end = new vscode.Position(
-          document.lineCount - 1,
-          document.lineAt(document.lineCount - 1).text.length
-        );
+        const end = new vscode.Position(document.lineCount - 1, document.lineAt(document.lineCount - 1).text.length);
         const range = new vscode.Range(start, end);
         return pretty(document, range);
       },
