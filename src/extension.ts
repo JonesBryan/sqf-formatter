@@ -17,7 +17,7 @@ function normalizeCommandStructure(text: string): string {
   return text
     .replace(/if\s*\((.*)\)\s*then\s*{/g, 'if ($1) then {')
     .replace(/}\s*else\s*{/g, '} else {')
-    .replace(/if\s*\((.*)\)\s*exitwith\s*{/g, 'if ($1) exitwith {')
+    .replace(/if\s*\((.*)\)\s*exitwith\s*{/g, 'if ($1) exitWith {')
     .replace(/while\s*\{\s*(.*[^\s]*)\s*\}\s*do\s*{/g, 'while {$1} do {');
 }
 
