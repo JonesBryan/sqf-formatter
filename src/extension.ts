@@ -6,7 +6,7 @@ import * as vscode from 'vscode';
 const commands: string[] = require('./commands');
 
 function makePrefix(level: number): string {
-  return '    '.repeat(Math.max(0, level));
+  return '  '.repeat(Math.max(0, level));
 }
 
 function normalizeBrackets(text: string): string {
