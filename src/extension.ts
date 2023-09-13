@@ -81,7 +81,7 @@ function pretty(document: vscode.TextDocument, range: vscode.Range): vscode.Text
   output = output.replace(/\/\/[\s\/]*(.*)$/gm, '// $1');
   // Normalize commands
   commands.forEach(command => {
-    output = output.replace(new RegExp(command, 'gi'), command);
+    output = output.replace(new RegExp('((?<!\'|\"|\\w)' + command + '(?!\'|\"|\\w))', 'gi'), command);
   });
   // Normalize spaces before and after comma
   output = normalizeCommas(output);
